@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public abstract class AbstractApp extends Application {
 
-	protected Scene scene;
+	protected static Scene scene;
 	public void start(Stage primaryStage, Parent root, double x, double y) {
 		try {		
 			scene = new Scene(root,x,y);

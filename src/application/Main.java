@@ -1,5 +1,8 @@
 package application;
 	
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,17 +21,28 @@ public class Main extends AbstractApp {
 		buttons.setSpacing(10);
 		buttons.setPadding(new Insets(20,60,5,60));
 		Button nowyWpis = new Button("Nowy Wpis");
-		nowyWpis.setOnAction( event -> {
-			System.out.println("E");
-			javafx.application.Platform.runLater(() -> ModyfikujWind.launch());
+		nowyWpis.setOnAction(new EventHandler<ActionEvent>() {
 			
+			@Override
+			public void handle(ActionEvent event) {
+				Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							ModyfikujaceWindow.newWindow();
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					}
+				});
+				
+			}
 		});
 		Button przegl¹daj = new Button("Przegl¹daj");
-		nowyWpis.setOnAction( arg0 -> System.out.println("PRZS"));
 		Button modyfikuj = new Button("Modyfikuj");
-		nowyWpis.setOnAction( arg0 -> {
-			
-		});
 		HBox end = new HBox();
 		Label saldo = new Label("Saldo: UNKNOW");
 		saldo.setFont(new Font(10));
@@ -37,7 +51,10 @@ public class Main extends AbstractApp {
 		buttons.getChildren().addAll(nowyWpis, przegl¹daj, modyfikuj);
 		root.getChildren().addAll(buttons, end);
 		scene.setRoot(root);
+		
 	}
+	
+	
 	
 	public static void main(String[] args) {
 		launch(args);
