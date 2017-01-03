@@ -151,7 +151,12 @@ exec dodawanieRachunku '2016-12-22' , 'wydatki' , 'transport' , 'bilet' , 'pks' 
 SELECT * FROM Budzet
 SELECT * FROM Transakcje
 SELECT * FROM Podmiot
-SELECT * FROM Artykul
+SELECT * FROM Transakcje.dbo.Artykul
 SELECT * FROM TypTransakcji
 SELECT * FROM RodzajTransakcji
 SELECT * FROM Lokalizacja
+
+insert into Artykul (NazwaArtykulu)
+values ('Dzem');
+
+EXEC Transakcje.dbo.dodawanieRachunku '2016-12-22' , 'wydatki' , 'transport' , 'bilet' , 'pks' , 'slezna' , '18' , 'wroclaw' , '10-100' , -12 , 'brak'

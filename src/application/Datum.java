@@ -2,12 +2,13 @@ package application;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
 public class Datum extends HBox {
 
-	
+	TextField textfield;
 	
 //	public Datum() {
 //		// TODO Auto-generated constructor stub
@@ -22,7 +23,7 @@ public class Datum extends HBox {
 		super();
 		Label label = new Label(name);
 		label.setPrefWidth(width);
-		TextField textfield = new TextField();
+		textfield = new TextField();
 		setSpacing(10);
 		textfield.setPrefWidth(190-width);
 		setPrefWidth(200);
@@ -46,5 +47,12 @@ public class Datum extends HBox {
 		super(spacing, children);
 		// TODO Auto-generated constructor stub
 	}
+
+	public TextField getTextfield() {
+		// TODO Auto-generated method stub
+		return textfield;
+	}
+
+	
 
 }
