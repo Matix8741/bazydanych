@@ -42,6 +42,27 @@ public class Main extends AbstractApp {
 			}
 		});
 		Button przegl퉐aj = new Button("Przegl퉐aj");
+		przegl퉐aj.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						Przegl퉐Okno okno = new Przegl퉐Okno();
+						try {
+							okno.start(new Stage());
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+				});
+				
+			}
+		});
 		Button modyfikuj = new Button("Modyfikuj");
 		HBox end = new HBox();
 		Label saldo = new Label("Saldo: UNKNOW");
@@ -50,8 +71,8 @@ public class Main extends AbstractApp {
 		end.setPadding(new Insets(0, 0,0,125)); 
 		buttons.getChildren().addAll(nowyWpis, przegl퉐aj, modyfikuj);
 		root.getChildren().addAll(buttons, end);
-		scene.setRoot(root);
-		
+		scene.setRoot(root);	
+		primaryStage.sizeToScene();
 	}
 	
 	

@@ -46,8 +46,8 @@ public class ModyfikujWind extends AbstractApp {
 			@Override
 			public void handle(ActionEvent arg0) {
 				SQL sql = new SQL();
+				//date.textfield.getText().trim().isEmpty();
 				try {
-					sql.connect();
 					//System.out.println(getString(typeBox.getSelectionModel().getSelectedIndex()));
 					sql.execDodawanieRachunku(Integer.valueOf(kwota.textfield.getText()),
 											date.textfield.getText() ,
