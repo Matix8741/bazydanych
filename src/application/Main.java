@@ -1,5 +1,7 @@
 package application;
 	
+import java.sql.SQLException;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,26 +52,26 @@ public class Main extends AbstractApp {
 					
 					@Override
 					public void run() {
-						Przegl퉐Okno okno = new Przegl퉐Okno();
-						try {
-							okno.start(new Stage());
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						Przegl퉐Okno.NewWindow();
 						
 					}
 				});
 				
 			}
 		});
-		Button modyfikuj = new Button("Modyfikuj");
 		HBox end = new HBox();
+		SQL sql = new SQL();
 		Label saldo = new Label("Saldo: UNKNOW");
+		try {
+			sql.selectForSaldo(saldo);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		saldo.setFont(new Font(10));
 		end.getChildren().add(saldo);
 		end.setPadding(new Insets(0, 0,0,125)); 
-		buttons.getChildren().addAll(nowyWpis, przegl퉐aj, modyfikuj);
+		buttons.getChildren().addAll(nowyWpis, przegl퉐aj);
 		root.getChildren().addAll(buttons, end);
 		scene.setRoot(root);	
 		primaryStage.sizeToScene();

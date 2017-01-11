@@ -3,6 +3,8 @@ package application;
 
 import java.sql.SQLException;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,6 +12,8 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -39,6 +43,24 @@ public class ModyfikujWind extends AbstractApp {
 		Datum miasto = new Datum("Miasto: ", 70);
 		Datum kodPocztowy = new Datum("Kod pocztowy: ", 110);
 		Datum kwota = new Datum("Kwota: ", 60);
+		addTextLimiterAndAction(kwota.textfield, typeBox);
+		typeBox.getSelectionModel().selectedIndexProperty().addListener( new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				if(newValue.intValue() == 0){
+					int i = 0;
+					try{i=Integer.valueOf(kwota.textfield.getText());}
+					catch (NumberFormatException e) {
+					}
+					if(i>0){
+						String s = kwota.textfield.getText();
+						kwota.textfield.setText("-"+s);
+					}
+				}
+				
+			}
+		});
 		Datum uwagi = new Datum("Uwagi: ", 60);
 		Button dodaj = new Button("DODAJ");
 		dodaj.setOnAction(new EventHandler<ActionEvent>() {
@@ -69,9 +91,36 @@ public class ModyfikujWind extends AbstractApp {
 			}
 		});
 		addMore(root, date,type,rodzaj,artyku³,podmiot, ulica,nrBudynku, miasto,kodPocztowy,kwota,uwagi,dodaj);
-		
+		primaryStage.sizeToScene();
 		}
-	
+	public static void addTextLimiterAndAction(final TextField tf,final ChoiceBox type) {
+		tf.textProperty().addListener((ChangeListener<String>) (ov, oldValue, newValue) -> {
+			int works =0;
+			boolean catched = false;
+			try{ works = Integer.valueOf(tf.getText());}
+			catch (IllegalArgumentException e){	
+				catched = true;
+			}
+			String st=getString(type.getSelectionModel().getSelectedIndex());			
+			if (catched) {
+				tf.setText("");
+				}
+			else{
+				if(st.equals("wydatki")){
+					if(works>0) {
+						String string = tf.getText();
+						tf.setText("-"+string);
+					}
+				}
+				else{
+					if(works<0){
+						works *=(-1);
+						tf.setText(String.valueOf(works));
+					}
+				}
+			}
+		});
+		}
 	private static String getString(int index){
 		if(index == 0) return "wydatki";
 		else return "dochody";

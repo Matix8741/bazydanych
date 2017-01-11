@@ -3,6 +3,8 @@ package application;
 import java.sql.*;
 import com.microsoft.sqlserver.jdbc.*;
 
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 public class SQL {
@@ -21,6 +23,21 @@ public class SQL {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	public void selectForSaldo(Label node)throws SQLException{
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT SUM(Kwota) FROM Transakcje.dbo.Transakcje");
+			while(rs.next()){
+				System.out.println(rs.getString(1));
+				node.setText("SALDO: "+rs.getDouble(1));
+			}
+		}catch( SQLException e){
+			
 		}
 	}
 	public void select(String table,String ...strings) throws SQLException{
@@ -150,4 +167,67 @@ public class SQL {
 			System.out.println(e.getMessage());
 		}
 	}
+	public boolean execModyfikowanieRachunku (int one,int two, String ...data) {
+		boolean withouterror = true;
+		try {
+			connect();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			withouterror = false;
+		}
+		try {
+			connection.setAutoCommit(false);
+		} catch (SQLException e1) {
+			withouterror = false;
+		}
+		PreparedStatement ps = null;
+		try{
+			String command ="EXEC Transakcje.dbo.modyfikowanieRachunku ?,?,?,?,?,?,?,?,?,?,?,?";
+			String params[]= new String[10];
+			int i=0;
+			for(String string : data){
+				params[i]=string;
+				i++;
+			}
+			ps = connection.prepareStatement(command);
+			ps.setEscapeProcessing(true);
+			ps.setQueryTimeout(10);
+			ps.setInt(1, one);
+			for(i=2; i<=12;i++){
+				if(i==11) {
+					ps.setInt(11, two);
+				}
+				else{
+					if(i==12){
+						ps.setString(i, params[9]);
+					}
+					else{
+						ps.setString(i, params[i-2]);
+					}
+				}
+			}
+			ps.executeUpdate();
+			connection.commit();
+			select("Artykul", "NazwaArtykulu");
+		}catch( SQLException e){
+			withouterror = false;
+			System.out.println(e.getMessage());
+		}finally{
+			if( ps!= null){
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					withouterror = false;
+				}
+			}
+			if(connection != null){
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					withouterror = false;
+				}
+			}
+		}
+		return withouterror;
+	}	
 }

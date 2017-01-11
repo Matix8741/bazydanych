@@ -62,7 +62,7 @@ BEGIN
 	declare @idTransakcja int
 	declare @Saldo smallmoney
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	SET @idTyp = (SELECT ID_Typ FROM TypTransakcji WHERE NazwaTypu = @typTransakcji) 
+0	SET @idTyp = (SELECT ID_Typ FROM TypTransakcji WHERE NazwaTypu = @typTransakcji) 
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	IF (SELECT COUNT(*) FROM RodzajTransakcji WHERE Nazwa = @rodzajTransakcji) > 0
 	BEGIN
@@ -144,6 +144,7 @@ insert into TypTransakcji  values ('dochody')
 insert into TypTransakcji  values ('wydatki')
 
 exec dodawanieRachunku '2016-12-22' , 'wydatki' , 'transport' , 'bilet' , 'pks' , 'slezna' , '18' , 'wroclaw' , '10-100' , -12 , 'brak'
+exec modyfikowanieRachunku 1 , '2016-12-24' , 'wydatki' , 'zywnosc' , 'woda' , 'Biedronka' , 'przyjaciol dzieci' , '4b' , 'klodZko' , '57-300' , -19.99 , 'brak'
 
 --DROP PROCEDURE dodawanieRachunku
 --------------------------------------------------------------------------------------------------------------------------------------
@@ -449,6 +450,7 @@ Transakcje.Kwota , Transakcje.Uwagi , Budzet.Saldo FROM Budzet
 					INNER JOIN Lokalizacja ON Podmiot.ID_Lokalizacja = Lokalizacja.ID_Lokalizacji /*ORDER BY Transakcje.Data*/) AS KOPIA
 --------------------------------------------------------------------------------------------------------------------------------------
 exec modyfikowanieRachunku 1 , '2016-12-24' , 'wydatki' , 'zywnosc' , 'woda' , 'Biedronka' , 'przyjaciol dzieci' , '4b' , 'klodZko' , '57-300' , -19.99 , 'brak'
+exec Transakcje.dbo.modyfikowanieRachunku
 --------------------------------------------------------------------------------------------------------------------------------------
 SELECT Transakcje.ID_Transakcji , Transakcje.Data , TypTransakcji.NazwaTypu , RodzajTransakcji.Nazwa , Artykul.NazwaArtykulu , 
 Podmiot.NazwaPodmiotu , Lokalizacja.Ulica ,Lokalizacja.NrBudynku , Lokalizacja.Miasto , Lokalizacja.KodPocztowy , 

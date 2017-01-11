@@ -143,7 +143,7 @@ END
 insert into TypTransakcji  values ('dochody')
 insert into TypTransakcji  values ('wydatki')
 
-exec dodawanieRachunku '2016-12-22' , 'wydatki' , 'transport' , 'bilet' , 'pks' , 'slezna' , '18' , 'wroclaw' , '10-100' , -12 , 'brak'
+exec dodawanieRachunku '2017-01-01' , 'wydatki' , 'zakupy' , 'pomidor' , 'lidl' , 'slowackiego' , '51' , 'wroclaw' , '10-100' , -1 , 'brak'
 
 --DROP PROCEDURE dodawanieRachunku
 --------------------------------------------------------------------------------------------------------------------------------------
