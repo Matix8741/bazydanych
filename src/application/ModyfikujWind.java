@@ -2,6 +2,8 @@ package application;
 
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -10,17 +12,21 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 public class ModyfikujWind extends AbstractApp {
 
+	String address = "";
 	protected ModyfikujWind() {
 		// TODO Auto-generated constructor stub
 	}
@@ -31,11 +37,42 @@ public class ModyfikujWind extends AbstractApp {
 		root.setSpacing(10);
 		root.setPadding(new Insets(10,30,0,30));
 		super.start(primaryStage, root, 400, 360);
-		Datum date = new Datum("Data: ", 60);
-		ChoiceBox typeBox = new ChoiceBox(
+		DatePicker datepicker =  new DatePicker();
+		datepicker.setConverter(new StringConverter<LocalDate>() {
+			
+			private DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			@Override
+			public String toString(LocalDate object) {
+				if(object == null)
+					return "";
+				return dateTimeFormat.format(object);
+			}
+			
+			@Override
+			public LocalDate fromString(String string) {
+				if(string==null || string.trim().isEmpty())
+		        {
+		            return null;
+		        }
+		        return LocalDate.parse(string,dateTimeFormat);
+			}
+		});
+		Datum date = new Datum("Data: ",datepicker);
+		ChoiceBox<String> typeBox = new ChoiceBox<String>(
 				FXCollections.observableArrayList("wydatki","dochody"));
+		typeBox.setValue("wydatki");;
 		Datum type = new Datum("Typ: ", typeBox);
-		Datum rodzaj = new Datum("Rodzaj: ", 70);
+		ComboBox combobox = new ComboBox();
+		//combobox.
+		combobox.setPromptText("E");
+		combobox.setEditable(true);
+		combobox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override 
+            public void changed(ObservableValue ov, String t, String t1) {                
+                address = t1;                
+            }    
+        });
+		Datum rodzaj = new Datum("Rodzaj: ", combobox);
 		Datum artyku³ = new Datum("Artyku³: ", 70);
 		Datum podmiot = new Datum("Podmiot: ", 75);
 		Datum ulica = new Datum("Ulica: ", 60);
@@ -68,6 +105,7 @@ public class ModyfikujWind extends AbstractApp {
 			@Override
 			public void handle(ActionEvent arg0) {
 				SQL sql = new SQL();
+				boolean good = true;
 				//date.textfield.getText().trim().isEmpty();
 				try {
 					//System.out.println(getString(typeBox.getSelectionModel().getSelectedIndex()));
@@ -83,9 +121,16 @@ public class ModyfikujWind extends AbstractApp {
 											kodPocztowy.textfield.getText() ,
 											uwagi.textfield.getText());
 					sql.select("Artykul", "NazwaArtykulu");
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (SQLException | NumberFormatException e) {
+					good= false;
+					Alert error = new Alert(AlertType.ERROR);
+					error.setTitle("B³¹d dodawania");
+					error.setHeaderText("Nie uda³o siê dodaæ formularza");
+					error.setContentText("B³êdne dane");
+					error.showAndWait();
+					System.out.println(e.getMessage());
+				}finally{
+					if(good) primaryStage.close();
 				}
 				
 			}
@@ -93,7 +138,7 @@ public class ModyfikujWind extends AbstractApp {
 		addMore(root, date,type,rodzaj,artyku³,podmiot, ulica,nrBudynku, miasto,kodPocztowy,kwota,uwagi,dodaj);
 		primaryStage.sizeToScene();
 		}
-	public static void addTextLimiterAndAction(final TextField tf,final ChoiceBox type) {
+	public static void addTextLimiterAndAction(final TextField tf,final ChoiceBox<String> type) {
 		tf.textProperty().addListener((ChangeListener<String>) (ov, oldValue, newValue) -> {
 			int works =0;
 			boolean catched = false;

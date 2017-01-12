@@ -1,34 +1,27 @@
 package application;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 
 public class DateTable extends TableView<Data> {
-	private List<Node> cells;
-	private List<Label> labels;
-	private List<TextField> textfields;
-	private SQL sql;
 	private DateTable getMe(){ return this; }
 	public DateTable(SQL sql) {
 		super();
-		this.sql = sql;
 		TableColumn<Data, String> colunmn1 = new TableColumn<>("ID");
 		TableColumn<Data, String> colunmn2 = new TableColumn<>("Data");
 		TableColumn<Data, String> colunmn3 = new TableColumn<>("Typ");
@@ -42,6 +35,48 @@ public class DateTable extends TableView<Data> {
 		TableColumn<Data, String> colunmn11 = new TableColumn<>("Kwota");
 		TableColumn<Data, String> colunmn12 = new TableColumn<>("Uwagi");
 		TableColumn<Data, String> colunmn13 = new TableColumn<>("Saldo");
+		setRowFactory(new Callback<TableView<Data>, TableRow<Data>>() {
+			
+			@Override
+			public TableRow<Data> call(TableView<Data> param) {
+				final TableRow<Data> row = new TableRow<>();  
+                final ContextMenu contextMenu = new ContextMenu();  
+                final MenuItem removeMenuItem = new MenuItem("Usuñ");  
+                removeMenuItem.setOnAction(new EventHandler<ActionEvent>() {  
+                    @Override  
+                    public void handle(ActionEvent event) {
+                    	Data nowData = row.getItem();
+                    	try {
+							if(sql.execUsuwanieRachunku(Integer.valueOf(nowData.getMyStrings(0)),
+								Double.valueOf(nowData.getMyStrings(10)).intValue(),
+								nowData.getMyStrings(1),
+								nowData.getMyStrings(2),
+								nowData.getMyStrings(3),
+								nowData.getMyStrings(4),
+								nowData.getMyStrings(5),
+								nowData.getMyStrings(6),
+								nowData.getMyStrings(7),
+								nowData.getMyStrings(8),
+								nowData.getMyStrings(9),
+								nowData.getMyStrings(11))){
+								getMe().getItems().remove(row.getItem());
+							}
+						} catch (NumberFormatException | SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}  
+                    }  
+                });  
+                contextMenu.getItems().add(removeMenuItem);  
+               // Set context menu on row, but use a binding to make it only show for non-empty rows:  
+                row.contextMenuProperty().bind(  
+                        Bindings.when(row.emptyProperty())  
+                        .then((ContextMenu)null)  
+                        .otherwise(contextMenu)  
+                );  
+                return row ;
+			}
+		});
 		colunmn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Data,String>, ObservableValue<String>>() {
 			
 			@Override
@@ -154,6 +189,54 @@ public class DateTable extends TableView<Data> {
 		colunmn11.setCellFactory(TextFieldTableCell.forTableColumn());
 		colunmn12.setCellFactory(TextFieldTableCell.forTableColumn());
 		colunmn3.setCellFactory(ChoiceBoxTableCell.forTableColumn("wydatki","dochody"));
+		colunmn3.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Data,String>>() {
+			
+			@Override
+			public void handle(CellEditEvent<Data, String> event) {
+				int row = event.getTablePosition().getRow();
+				Data nowData = colunmn1.getTableView().getItems().get(row);
+				boolean is,t = true;
+				try {
+					is =sql.execModyfikowanieRachunku(Integer.valueOf(nowData.getMyStrings(0)),
+							Double.valueOf(nowData.getMyStrings(10)).intValue(),
+							nowData.getMyStrings(1),
+							event.getNewValue(),
+							nowData.getMyStrings(3),
+							nowData.getMyStrings(4),
+							nowData.getMyStrings(5),
+							nowData.getMyStrings(6),
+							nowData.getMyStrings(7),
+							nowData.getMyStrings(8),
+							nowData.getMyStrings(9),
+							nowData.getMyStrings(11));
+					t =sql.execModyfikowanieRachunku(Integer.valueOf(nowData.getMyStrings(0)),
+							Double.valueOf(nowData.getMyStrings(10)).intValue()*(-1),
+							nowData.getMyStrings(1),
+							event.getNewValue(),
+							nowData.getMyStrings(3),
+							nowData.getMyStrings(4),
+							nowData.getMyStrings(5),
+							nowData.getMyStrings(6),
+							nowData.getMyStrings(7),
+							nowData.getMyStrings(8),
+							nowData.getMyStrings(9),
+							nowData.getMyStrings(11));
+				} catch (NumberFormatException e) {
+					is = false;
+					e.printStackTrace();
+				}
+				if(is&&t){
+					((Data) event.getTableView().getItems().get(
+							event.getTablePosition().getRow())
+							).setMyString(2, event.getNewValue());
+					((Data) event.getTableView().getItems().get(
+							event.getTablePosition().getRow())
+							).setMyString(10, String.valueOf(Double.valueOf(nowData.getMyStrings(10)).intValue()*(-1)));
+				}
+				getMe().refresh();
+				
+			}
+		});
 		colunmn2.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Data,String>>() {
 			
 			@Override
@@ -485,18 +568,6 @@ public class DateTable extends TableView<Data> {
 			}
 		});
 	}
-//	public DateForTuple() {
-//		cells = new ArrayList<Node>();
-//		labels = new ArrayList<Label>();
-//		textfields = new ArrayList<TextField>();
-//	}
-//	public void update(){
-//		for(Node child : getChildren()){
-//			getChildren().remove(child);
-//		}
-//		for(Node child : cells){
-//			getChildren().add(child);
-//		}
-//	}
+
 	
 }

@@ -1,10 +1,5 @@
 package application;
 
-import java.util.ArrayList;
-
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -45,7 +40,7 @@ public class Przegl¹dOkno extends AbstractApp {
 
 	public void setData(String ...strings ){
 		int i =0;
-		for(String string : strings){
+		for (int j = 0; j < strings.length; j++) {
 			i++;
 		}
 		if(i!=13) return;

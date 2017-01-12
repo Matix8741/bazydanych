@@ -1,6 +1,8 @@
 package application;
 	
 import java.sql.SQLException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -23,6 +25,7 @@ public class Main extends AbstractApp {
 		buttons.setSpacing(10);
 		buttons.setPadding(new Insets(20,60,5,60));
 		Button nowyWpis = new Button("Nowy Wpis");
+		nowyWpis.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
 		nowyWpis.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -44,6 +47,7 @@ public class Main extends AbstractApp {
 			}
 		});
 		Button przegl퉐aj = new Button("Przegl퉐aj");
+		przegl퉐aj.setStyle("-fx-font: 22 arial; -fx-base: #b6e7c9;");
 		przegl퉐aj.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -68,16 +72,37 @@ public class Main extends AbstractApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		saldo.setFont(new Font(10));
+		refresh(new Timer(), sql, saldo);
+		saldo.setFont(new Font(20));
 		end.getChildren().add(saldo);
 		end.setPadding(new Insets(0, 0,0,125)); 
 		buttons.getChildren().addAll(nowyWpis, przegl퉐aj);
 		root.getChildren().addAll(buttons, end);
 		scene.setRoot(root);	
 		primaryStage.sizeToScene();
+		primaryStage.setResizable(false);
 	}
 	
-	
+	public static void refresh(Timer timer, SQL sql, Label label){
+		timer.scheduleAtFixedRate(new TimerTask() {
+			
+			@Override
+			public void run() {
+				Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							sql.selectForSaldo(label);
+						} catch (SQLException e) {
+						}
+						
+					}
+				});
+				
+			}
+		},0,1000);
+	}
 	
 	public static void main(String[] args) {
 		launch(args);

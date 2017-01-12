@@ -1,8 +1,8 @@
 package application;
 
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
@@ -30,10 +30,18 @@ public class Datum extends HBox {
 		getChildren().addAll(label, textfield);
 		
 	}
+	public Datum(String name, ComboBox node){
+		super();
+		Label label = new Label(name);
+		setPrefWidth(250);
+		node.setPrefWidth(150);
+		setSpacing(10);
+		getChildren().addAll(label, node);
+	}
 	public Datum(String name, Node node){
 		super();
 		Label label = new Label(name);
-		setPrefWidth(200);
+		setPrefWidth(250);
 		setSpacing(10);
 		getChildren().addAll(label, node);
 	}

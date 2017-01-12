@@ -452,7 +452,7 @@ Transakcje.Kwota , Transakcje.Uwagi , Budzet.Saldo FROM Budzet
 					INNER JOIN RodzajTransakcji ON Transakcje.ID_RodzajTransakcji = RodzajTransakcji.ID_Rodzaj
 					INNER JOIN Lokalizacja ON Podmiot.ID_Lokalizacja = Lokalizacja.ID_Lokalizacji /*ORDER BY Transakcje.Data*/) AS KOPIA
 --------------------------------------------------------------------------------------------------------------------------------------
-exec modyfikowanieRachunku  3 , '2016-12-22' , 'wydatki' , 'transport' , 'bilet' , 'pks' , 'slezna' , '18' , 'wroclaw' , '10-100' , -12 , 'brak'
+exec modyfikowanieRachunku  3 , '2016-12-22' , 'wydatki' , 'transport' , 'bilet                                                     ' , 'pks' , 'slezna' , '18' , 'wroclaw' , '10-100' , -12 , 'brak'
 --------------------------------------------------------------------------------------------------------------------------------------
 SELECT Transakcje.ID_Transakcji , Transakcje.Data , TypTransakcji.NazwaTypu , RodzajTransakcji.Nazwa , Artykul.NazwaArtykulu , 
 Podmiot.NazwaPodmiotu , Lokalizacja.Ulica ,Lokalizacja.NrBudynku , Lokalizacja.Miasto , Lokalizacja.KodPocztowy , 
@@ -472,7 +472,7 @@ SELECT * FROM Budzet WHERE Transakcja < NULL
 DROP TABLE #Kopiakompleksowa
 
 select * from Budzet
-select * from Transakcje
+select * from TypTransakcji
 select * from Podmiot
 select* from Lokalizacja
 
@@ -514,5 +514,5 @@ BEGIN
 	END
 END
 
-exec usuwanieRachunku 3 , '2016-12-22' , 'wydatki' , 'transport' , 'bilet' , 'pks' , 'slezna' , '18' , 'wroclaw' , '10-100' , -12 , 'brak'
+exec usuwanieRachunku 3 , '2016-12-22' , 'wydatki' , 'transport                                            ' , 'bilet' , 'pks' , 'slezna' , '18' , 'wroclaw' , '10-100' , -12 , 'brak'
 DROP PROCEDURE usuwanieRachunku
