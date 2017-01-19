@@ -110,9 +110,9 @@ public class ModyfikujWind extends AbstractApp {
 				try {
 					//System.out.println(getString(typeBox.getSelectionModel().getSelectedIndex()));
 					sql.execDodawanieRachunku(Integer.valueOf(kwota.textfield.getText()),
-											date.textfield.getText() ,
+											datepicker.getEditor().getText() ,
 											getString(typeBox.getSelectionModel().getSelectedIndex()) ,
-											rodzaj.textfield.getText() ,
+											combobox.getEditor().getText() ,
 											artyku³.textfield.getText() ,
 											podmiot.textfield.getText() ,
 											ulica.textfield.getText() ,
