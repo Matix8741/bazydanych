@@ -62,7 +62,7 @@ public class ModyfikujWind extends AbstractApp {
 				FXCollections.observableArrayList("wydatki","dochody"));
 		typeBox.setValue("wydatki");;
 		Datum type = new Datum("Typ: ", typeBox);
-		ComboBox combobox = new ComboBox();
+		ComboBox<String> combobox = new ComboBox<>();
 		//combobox.
 		combobox.setPromptText("E");
 		combobox.setEditable(true);
