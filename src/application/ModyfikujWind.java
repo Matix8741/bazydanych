@@ -1,19 +1,18 @@
 package application;
 
 
-import java.lang.reflect.Array;
 import java.sql.SQLException;
-import java.text.Collator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -70,7 +69,6 @@ public class ModyfikujWind extends AbstractApp {
 		Datum type = new Datum("Typ: ", typeBox);
 		List<ComboBox<String>> combobox = new ArrayList<ComboBox<String>>(8);
 		List<ObservableList<String>> comboBoxItems = new ArrayList<ObservableList<String>>();
-		System.out.println(combobox.size());
 		for(int i =0; i<9;i++){
 			comboBoxItems.add(FXCollections.observableArrayList());
 			combobox.add(new ComboBox<String>());
@@ -78,7 +76,15 @@ public class ModyfikujWind extends AbstractApp {
 			//comboBoxItems.get(i).sort(new StringComparator("AA"));
 			combobox.get(i).setItems(/*new SortedList<String>(*/comboBoxItems.get(i)/*, Collator.getInstance())*/);
 			combobox.get(i).setEditable(true);
-			addTextComboSortAndAction(combobox.get(i).getEditor(), combobox.get(i));
+			combobox.get(i).getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					System.out.println("selct:  "+newValue);
+					
+				}
+			});
+		//	addTextComboSortAndAction(combobox.get(i).getEditor(), combobox.get(i));
 		}
 		comboBoxItems.get(0).sort(new StringComparator("AA"));
 		Datum rodzaj = new Datum("Rodzaj: ", combobox.get(0));
@@ -145,7 +151,6 @@ public class ModyfikujWind extends AbstractApp {
 					error.setHeaderText("Nie uda³o siê dodaæ formularza");
 					error.setContentText("B³êdne dane");
 					error.showAndWait();
-					System.out.println(e.getMessage());
 				}finally{
 					if(good) primaryStage.close();
 				}
@@ -185,8 +190,12 @@ public class ModyfikujWind extends AbstractApp {
 		}
 	
 	public static void addTextComboSortAndAction(final TextField tf,final ComboBox<String> type) {
-		tf.textProperty().addListener((ChangeListener<String>) (ov, oldValue, newValue) -> {
-			type.getItems().sort(new StringComparator(newValue));
+		type.getEditor().textProperty().addListener((ChangeListener<String>) (ov, oldValue, newValue) -> {
+		//	type.getItems().sort(new StringComparator(newValue));
+			if(newValue != type.getSelectionModel().getSelectedItem())
+				Collections.sort(type.getItems(),new StringComparator(newValue));
+			type.setEditable(true);
+			//tf.setText(newValue);
 		});
 		}
 	
@@ -203,7 +212,6 @@ public class ModyfikujWind extends AbstractApp {
 		for(Node node : arg){
 			hbox.getChildren().add(node);
 			if(meter){
-				System.out.println("KKKK");
 				hbox = new HBox();
 				hbox.setSpacing(30);
 				hbox.setPadding(new Insets(10,0,10,0));
@@ -215,7 +223,6 @@ public class ModyfikujWind extends AbstractApp {
 	}
 
 	private static boolean changeBoolean(boolean state){
-		System.out.println(state);
 		if(state){
 			return false;
 		}else{
