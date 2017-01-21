@@ -165,6 +165,7 @@ Transakcje.Kwota , Transakcje.Uwagi , Budzet.Saldo FROM Budzet
 					INNER JOIN TypTransakcji ON Transakcje.ID_TypTransakcji = TypTransakcji.ID_Typ
 					INNER JOIN RodzajTransakcji ON Transakcje.ID_RodzajTransakcji = RodzajTransakcji.ID_Rodzaj
 					INNER JOIN Lokalizacja ON Podmiot.ID_Lokalizacja = Lokalizacja.ID_Lokalizacji ORDER BY Transakcje.Data
+drop procedure modyfikowanieRachunku
 --------------------------------------------------------------------------------------------------------------------------------------
 CREATE PROCEDURE modyfikowanieRachunku @idtransakcji int , @data datetime , @typTransakcji nchar(20) , @rodzajTransakcji nchar(20), @artykuly nchar(20), @podmiot nchar(20) ,@podmiotUlica nchar(50), @podmiotBudynek nchar(20), @podmiotMiasto nchar(20) , @podmiotKod nchar(20) , @kwota smallmoney, @uwagi nchar(200)
 AS
@@ -524,7 +525,7 @@ END
 
 exec usuwanieRachunku 3 , '2016-12-22' , 'wydatki' , 'transport' , 'bilet' , 'pks' , 'slezna' , '18' , 'wroclaw' , '10-100' , -12 , 'brak'
 DROP PROCEDURE usuwanieRachunku
-
+select * from Transakcje.dbo.TypTransakcji
 SELECT Nazwa FROM RodzajTransakcji INNER JOIN Transakcje ON ID_Rodzaj = ID_RodzajTransakcji GROUP BY Nazwa ORDER BY COUNT (*)
 SELECT NazwaArtykulu FROM Artykul INNER JOIN Transakcje ON ID_Artykulu = ID_Artykul GROUP BY NazwaArtykulu ORDER BY COUNT (*)
 SELECT NazwaPodmiotu FROM Podmiot INNER JOIN Transakcje ON ID_Podmiot = ID_Podmiotu GROUP BY NazwaPodmiotu ORDER BY COUNT (*)

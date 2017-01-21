@@ -393,6 +393,7 @@ public class SQL {
 				}
 			}
 			ps.executeUpdate();
+			
 			connection.commit();
 		}catch( SQLException e){
 			withouterror = false;

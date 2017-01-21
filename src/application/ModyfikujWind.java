@@ -74,8 +74,8 @@ public class ModyfikujWind extends AbstractApp {
 		for(int i =0; i<9;i++){
 			comboBoxItems.add(FXCollections.observableArrayList());
 			combobox.add(new ComboBox<String>());
-			combobox.get(i).setPromptText("E");
-			comboBoxItems.get(i).sort(new StringComparator("AA"));
+			//combobox.get(i).setPromptText("E");
+			//comboBoxItems.get(i).sort(new StringComparator("AA"));
 			combobox.get(i).setItems(/*new SortedList<String>(*/comboBoxItems.get(i)/*, Collator.getInstance())*/);
 			combobox.get(i).setEditable(true);
 			addTextComboSortAndAction(combobox.get(i).getEditor(), combobox.get(i));
