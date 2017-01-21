@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
@@ -27,6 +28,129 @@ public class SQL {
 			e.printStackTrace();
 		}
 	}
+	public void selectForComboboxName(ObservableList<String> os) throws SQLException{
+	
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT Nazwa FROM Transakcje.dbo.RodzajTransakcji INNER JOIN Transakcje.dbo.Transakcje ON ID_Rodzaj = ID_RodzajTransakcji GROUP BY Nazwa ORDER BY COUNT (*) DESC");
+			while(rs.next()){
+				os.add(rs.getString(1));
+				System.out.println(rs.getString(1));
+			}
+		}catch( SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void selectForComboboxArtykul(ObservableList<String> os) throws SQLException{
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT NazwaArtykulu FROM Transakcje.dbo.Artykul INNER JOIN Transakcje.dbo.Transakcje ON ID_Artykulu = ID_Artykul GROUP BY NazwaArtykulu ORDER BY COUNT (*) DESC");
+			while(rs.next()){
+				os.add(rs.getString(1));
+			}
+		}catch( SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void selectForComboboxUlica(ObservableList<String> os) throws SQLException{
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT Ulica FROM Transakcje.dbo.Lokalizacja INNER JOIN Transakcje.dbo.Podmiot ON ID_Lokalizacji = ID_Lokalizacja GROUP BY Ulica , NrBudynku , Miasto , KodPocztowy ORDER BY COUNT (*) DESC");
+			while(rs.next()){
+				os.add(rs.getString(1));
+			}
+		}catch( SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void selectForComboboxNrBud(ObservableList<String> os) throws SQLException{
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT NrBudynku FROM Transakcje.dbo.Lokalizacja INNER JOIN Transakcje.dbo.Podmiot ON ID_Lokalizacji = ID_Lokalizacja GROUP BY Ulica , NrBudynku , Miasto , KodPocztowy ORDER BY COUNT (*) DESC");
+			while(rs.next()){
+				os.add(rs.getString(1));
+			}
+		}catch( SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void selectForComboboxPodmiot(ObservableList<String> os) throws SQLException{
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT NazwaPodmiotu FROM Transakcje.dbo.Podmiot INNER JOIN Transakcje.dbo.Transakcje ON ID_Podmiot = ID_Podmiotu GROUP BY NazwaPodmiotu ORDER BY COUNT (*) DESC");
+			while(rs.next()){
+				os.add(rs.getString(1));
+			}
+		}catch( SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void selectForComboboxMiasto(ObservableList<String> os) throws SQLException{
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT Miasto FROM Transakcje.dbo.Lokalizacja INNER JOIN Transakcje.dbo.Podmiot ON ID_Lokalizacji = ID_Lokalizacja GROUP BY Ulica , NrBudynku , Miasto , KodPocztowy ORDER BY COUNT (*) DESC");
+			while(rs.next()){
+				os.add(rs.getString(1));
+			}
+		}catch( SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void selectForComboboxKodBud(ObservableList<String> os) throws SQLException{
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT KodPocztowy FROM Transakcje.dbo.Lokalizacja INNER JOIN Transakcje.dbo.Podmiot ON ID_Lokalizacji = ID_Lokalizacja GROUP BY Ulica , NrBudynku , Miasto , KodPocztowy ORDER BY COUNT (*) DESC");
+			while(rs.next()){
+				os.add(rs.getString(1));
+			}
+		}catch( SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void selectForComboboxKwot(ObservableList<String> os) throws SQLException{
+		connect();
+		connection.setAutoCommit(false);
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			ResultSet rs = st.executeQuery(		"SELECT Kwota FROM Transakcje.dbo.Transakcje GROUP BY Kwota ORDER BY COUNT(*) DESC");
+			while(rs.next()){
+				os.add(rs.getString(1));
+			}
+		}catch( SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
 	public void selectForSaldo(Label node)throws SQLException{
 		connect();
 		connection.setAutoCommit(false);

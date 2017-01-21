@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 public class Datum extends HBox {
 
 	TextField textfield;
+	private ComboBox combobox;
 	
 //	public Datum() {
 //		// TODO Auto-generated constructor stub
@@ -30,8 +31,9 @@ public class Datum extends HBox {
 		getChildren().addAll(label, textfield);
 		
 	}
-	public Datum(String name, ComboBox node){
+	public Datum(String name, ComboBox<String> node){
 		super();
+		setCombobox(node);
 		Label label = new Label(name);
 		setPrefWidth(250);
 		node.setPrefWidth(150);
@@ -57,8 +59,18 @@ public class Datum extends HBox {
 	}
 
 	public TextField getTextfield() {
-		// TODO Auto-generated method stub
+		if(textfield == null){
+			return getCombobox().getEditor();
+		}
 		return textfield;
+	}
+
+	public ComboBox getCombobox() {
+		return combobox;
+	}
+
+	private void setCombobox(ComboBox combobox) {
+		this.combobox = combobox;
 	}
 
 	
