@@ -70,18 +70,18 @@ public class ModyfikujWind extends AbstractApp {
 				FXCollections.observableArrayList("wydatki","dochody"));
 		typeBox.setValue("wydatki");;
 		Datum type = new Datum("Typ: ", typeBox);
-		List<ComboBox<String>> combobox = new ArrayList<ComboBox<String>>(8);
+		List<FilterComboBox> combobox = new ArrayList<FilterComboBox>(8);
 		List<ObservableList<String>> comboBoxItems = new ArrayList<ObservableList<String>>();
 		for(int i =0; i<9;i++){
 			comboBoxItems.add(FXCollections.observableArrayList());
-			combobox.add(new ComboBox<String>());
+			combobox.add(new FilterComboBox(comboBoxItems.get(i)));
 			//combobox.get(i).setPromptText("E");
 			//comboBoxItems.get(i).sort(new StringComparator("AA"));
 			combobox.get(i).setItems(/*new SortedList<String>(*/comboBoxItems.get(i)/*, Collator.getInstance())*/);
 			combobox.get(i).setEditable(true);
-		//	addTextComboSortAndAction(combobox.get(i).getEditor(), combobox.get(i));
-			FxUtilTest.autoCompleteComboBoxPlus(combobox.get(i), (typedText, itemToCompare) -> itemToCompare.toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.equals(typedText));
-			FxUtilTest.getComboBoxValue(combobox.get(i));
+			//addTextComboSortAndAction(combobox.get(i).getEditor(), combobox.get(i));
+			//FxUtilTest.autoCompleteComboBoxPlus(combobox.get(i), (typedText, itemToCompare) -> itemToCompare.toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.equals(typedText));
+			//FxUtilTest.getComboBoxValue(combobox.get(i));
 		}
 		comboBoxItems.get(0).sort(new StringComparator("AA"));
 		Datum rodzaj = new Datum("Rodzaj: ", combobox.get(0));
