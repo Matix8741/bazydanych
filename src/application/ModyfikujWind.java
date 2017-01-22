@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -32,8 +33,10 @@ import javafx.util.StringConverter;
 public class ModyfikujWind extends AbstractApp {
 
 	String address = "";
+	protected String pattern;
 	protected ModyfikujWind() {
 		// TODO Auto-generated constructor stub
+		pattern ="";
 	}
 
 	@Override
@@ -76,15 +79,9 @@ public class ModyfikujWind extends AbstractApp {
 			//comboBoxItems.get(i).sort(new StringComparator("AA"));
 			combobox.get(i).setItems(/*new SortedList<String>(*/comboBoxItems.get(i)/*, Collator.getInstance())*/);
 			combobox.get(i).setEditable(true);
-			combobox.get(i).getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-
-				@Override
-				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					System.out.println("selct:  "+newValue);
-					
-				}
-			});
 		//	addTextComboSortAndAction(combobox.get(i).getEditor(), combobox.get(i));
+			FxUtilTest.autoCompleteComboBoxPlus(combobox.get(i), (typedText, itemToCompare) -> itemToCompare.toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.equals(typedText));
+			FxUtilTest.getComboBoxValue(combobox.get(i));
 		}
 		comboBoxItems.get(0).sort(new StringComparator("AA"));
 		Datum rodzaj = new Datum("Rodzaj: ", combobox.get(0));
@@ -109,13 +106,20 @@ public class ModyfikujWind extends AbstractApp {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				if(newValue.intValue() == 0){
-					int i = 0;
-					try{i=Integer.valueOf(kwota.textfield.getText());}
-					catch (NumberFormatException e) {
+					double i = 0;
+					try{i=Double.valueOf(kwota.getTextfield().getText());}
+					catch (IllegalArgumentException e) {
 					}
 					if(i>0){
-						String s = kwota.getTextfield().getText();
-						kwota.getTextfield().setText("-"+s);
+						Platform.runLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								String s = kwota.getTextfield().getText();
+								kwota.getTextfield().setText("-"+s);
+							}
+						});
 					}
 				}
 				
@@ -162,39 +166,87 @@ public class ModyfikujWind extends AbstractApp {
 		}
 	public static void addTextLimiterAndAction(final TextField tf,final ChoiceBox<String> type) {
 		tf.textProperty().addListener((ChangeListener<String>) (ov, oldValue, newValue) -> {
-			int works =0;
+			if(newValue == null || newValue.equals(""))
+				return;
+			double works =0;
 			boolean catched = false;
-			try{ works = Integer.valueOf(tf.getText());}
+			try{ works = Double.valueOf(tf.getText());}
 			catch (IllegalArgumentException e){	
 				catched = true;
+				//works = 0;
+				System.out.println(e.getMessage());
 			}
 			String st=getString(type.getSelectionModel().getSelectedIndex());			
 			if (catched) {
-				tf.setText("");
+				Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						tf.setText("");
+					}
+				});
 				}
 			else{
 				if(st.equals("wydatki")){
 					if(works>0) {
+
 						String string = tf.getText();
+						Platform.runLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								
+							}
+						});
 						tf.setText("-"+string);
 					}
 				}
 				else{
 					if(works<0){
 						works *=(-1);
-						tf.setText(String.valueOf(works));
+						final double finaly = works;
+						Platform.runLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								tf.setText(String.valueOf(finaly));
+							}
+						});
 					}
 				}
 			}
 		});
 		}
 	
-	public static void addTextComboSortAndAction(final TextField tf,final ComboBox<String> type) {
+	public void addTextComboSortAndAction(final TextField tf,final ComboBox<String> type) {
 		type.getEditor().textProperty().addListener((ChangeListener<String>) (ov, oldValue, newValue) -> {
 		//	type.getItems().sort(new StringComparator(newValue));
+			if(newValue == null || newValue.equals(""))
+				return;
 			if(newValue != type.getSelectionModel().getSelectedItem())
-				Collections.sort(type.getItems(),new StringComparator(newValue));
-			type.setEditable(true);
+			Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					System.out.println("new: "+newValue);
+					if(pattern.equals(newValue)){
+						
+					}else{
+						if(newValue!= null&& !newValue.equals("")){
+							pattern = newValue;
+							// Clear value of ComboBox because clearSelection() does not do it
+							//type.setValue(null);
+							Collections.sort(type.getItems(),new StringComparator(newValue));
+							//type.getSelectionModel().clearSelection();
+							type.setEditable(true);
+						}
+					}
+				}
+			});	
 			//tf.setText(newValue);
 		});
 		}
